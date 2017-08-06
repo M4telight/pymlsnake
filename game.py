@@ -37,6 +37,9 @@ class Game(object):
         self.screen = pymlgame.Screen(mlhost, mlport, screen_width, screen_height)
         self.clock = pymlgame.Clock(15)
 
+        self.reset()
+
+    def reset(self):
         part = (int(self.screen.width / 2), int(self.screen.height / 2))
         self.snake = Snake([(part[0] - 2, part[1]), (part[0] - 1, part[1]),
                             part], RIGHT, (self.screen.width, self.screen.height))
@@ -112,37 +115,22 @@ class Game(object):
         A game loop that circles through the methods.
         """
         try:
-            while not self.gameover:
-                self.handle_events()
-                self.update()
-                self.render()
-            print('game over - score:', self.score)
-            print('current highscore:', self.highscore)
-            if self.score > int(self.highscore):
-                self.write_highscore()
+            while True:
+                while not self.gameover:
+                    self.handle_events()
+                    self.update()
+                    self.render()
+                print('game over - score:', self.score)
+                print('current highscore:', self.highscore)
+                if int(self.score) > int(self.highscore):
+                    self.write_highscore()
 
-            end = time.time() + 5
-            while time.time() < end:
-                self.screen.reset()
-                surface = pymlgame.Surface(self.screen.width, self.screen.height)
-                #TODO: write score and highscore
-                #font = pymlgame.font('score: {}'.format(self.score),
-                #                     pymlgame.WHITE, pymlgame.BLACK)
-                if self.score > self.highscore:
-                    #surface.blit(font, (0, int(self.height / 2) - 1 -
-                    #                       font.surface.height))
-                    #new = pymlgame.font('new highscore!', pymlgame.WHITE,
-                    #                    pymlgame.BLACK)
-                    #surface.blit(new, (0, int(self.height / 2) + 1))
-                    pass
-                else:
-                    #surface.blit(font, (0, int(self.height / 2) - 1 -
-                    #                       int(font.surface.height / 2)))
-                    pass
-
-                self.screen.blit(surface)
-                self.screen.update()
-                self.clock.tick()
+                end = time.time() + 5
+                while time.time() < end:
+                    self.screen.reset()
+                    self.screen.update()
+                    self.clock.tick()
+                self.reset()
 
         except KeyboardInterrupt:
             pass
